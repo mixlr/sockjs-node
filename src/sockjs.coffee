@@ -72,6 +72,7 @@ utils.objectExtend(App.prototype, trans_htmlfile.app)
 
 generate_dispatcher = (options) ->
         p = (s) => new RegExp('^' + options.prefix + s + '[/]?$')
+        o = (s) => [p('/([^/.]+)' + s), 'server']
         t = (s) => [p('/([^/.]+)/([^/.]+)' + s), 'server', 'session']
         opts_filters = (options_filter='xhr_options') ->
             return ['h_sid', 'xhr_cors', 'cache_for', options_filter, 'expose']
@@ -83,6 +84,7 @@ generate_dispatcher = (options) ->
             ['OPTIONS', p('/chunking_test'), opts_filters()],
             ['POST',    p('/chunking_test'), ['xhr_cors', 'expect_xhr', 'chunking_test']],
             ['GET',     p('/websocket'),   ['raw_websocket']],
+            ['GET',     o('/websocket'),   ['raw_websocket']],
             ['GET',     t('/jsonp'), ['h_sid', 'h_no_cache', 'jsonp']],
             ['POST',    t('/jsonp_send'), ['h_sid', 'h_no_cache', 'expect_form', 'jsonp_send']],
             ['POST',    t('/xhr'), ['h_sid', 'h_no_cache', 'xhr_cors', 'xhr_poll']],
